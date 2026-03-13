@@ -18,9 +18,9 @@ jobs:
           version: latest
 
       - run: |
-          supabase link --project-ref ${{ secrets.SUPABASE_PROJECT_REF }}
-          supabase functions deploy chat --no-verify-jwt
-          supabase functions deploy whisper --no-verify-jwt
-          supabase functions deploy rss-context --no-verify-jwt
+          echo "project_id = \"${{ secrets.SUPABASE_PROJECT_REF }}\"" > supabase/config.toml
+          supabase functions deploy chat --project-ref ${{ secrets.SUPABASE_PROJECT_REF }} --no-verify-jwt
+          supabase functions deploy whisper --project-ref ${{ secrets.SUPABASE_PROJECT_REF }} --no-verify-jwt
+          supabase functions deploy rss-context --project-ref ${{ secrets.SUPABASE_PROJECT_REF }} --no-verify-jwt
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
