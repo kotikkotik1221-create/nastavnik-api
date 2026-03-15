@@ -24,7 +24,7 @@ Deno.serve(async (req: Request) => {
   }
 
   try {
-    const { messages, mode, userProfile, userStyle, rssContext, premium } = await req.json();
+    const { messages, mode, userProfile, userStyle, rssContext, premium, admin } = await req.json();
 
     if (!messages || !Array.isArray(messages) || messages.length === 0) {
       return new Response(JSON.stringify({ error: "Invalid request body" }), {
@@ -170,8 +170,9 @@ JSON: {"needs_update":true/false,"adjustments":{"tone":"","avoids":[],"vocabular
       },
       body: JSON.stringify({
         model: isTopics ? "claude-haiku-4-5-20251001"
-          : (promptKey === "scenario" && !premium) ? "claude-haiku-4-5-20251001"
-          : "claude-sonnet-4-20250514",
+          : admin ? "claude-sonnet-4-20250514"
+          : premium ? (promptKey === "blog" || promptKey === "projects" ? "claude-sonnet-4-20250514" : "claude-haiku-4-5-20251001")
+          : "claude-haiku-4-5-20251001",
         max_tokens: isTopics ? 800 : 2000,
         system: systemPrompt,
         messages: safeMessages,
